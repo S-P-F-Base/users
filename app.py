@@ -2,7 +2,7 @@ import contextlib
 
 from fastapi import FastAPI
 
-from db_control import AccessDB, CredentialsDB, DbCharDB, PermaLimitDB
+from db_control import AccessDB, CredentialsDB, DbCharDB, PermaLimitDB, TimedLimitDB
 from router.overlord_api import router as overlord_api_router
 
 
@@ -10,7 +10,7 @@ from router.overlord_api import router as overlord_api_router
 async def lifespan(app: FastAPI):
     CredentialsDB.set_up()
     PermaLimitDB.set_up()
-    #
+    TimedLimitDB.set_up()
     DbCharDB.set_up()
     AccessDB.set_up()
 
