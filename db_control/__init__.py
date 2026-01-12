@@ -15,12 +15,8 @@ discord_url str
 char_type str аналогично timed_limit.status. Хотелось бы инт, но я сам себе злобный буратино и себе срать не хочу
 content_ids json blob просто лист айдишек стима, по котором и будет расчёт даты
 game_db_id int будующее связка для игровой бд как только у меня руки дотянутся. Пока всё null
-
-table access 1:1
-id -> credentials.id
-version int для миграции онли. Возможно даже не особо нужно если быть честным
-access json blob
 """
 
+from .access_db import AccessDB
 from .credentials_db import CredentialsDB
 from .perma_limit_db import PermaLimitDB
