@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
-from config import AccessKeys
+from config import AccessKeys, USER_GET_TYPE
 
 router = APIRouter()
 
@@ -20,6 +20,6 @@ async def info_access():
 @router.get("/users/info/user_get_type")
 async def info_user_get_type():
     return JSONResponse(
-        ["id", "discord", "steam64"],
+        USER_GET_TYPE,
         status_code=200,
     )

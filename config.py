@@ -1,12 +1,15 @@
 import logging
 from enum import Enum
 from pathlib import Path
+from typing import Literal
 
 import httpx
 
 log = logging.getLogger(__name__)
 
 OVERLORD_SOCKET = Path("/run/spf/overlord.sock")
+USER_GET_TYPE = ["id", "discord", "steam64"]
+USER_GET_TYPE_L = Literal["id", "discord", "steam64"]
 
 
 class Constants:
