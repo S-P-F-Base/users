@@ -101,6 +101,7 @@ class AccessDB(BaseDB):
 
         try:
             access_data = json.loads(row[2])
+
         except Exception:
             access_data = {}
 

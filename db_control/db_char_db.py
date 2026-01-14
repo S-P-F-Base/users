@@ -1,8 +1,10 @@
 import json
 from queue import Queue
-from typing import Any
+from typing import Any, Literal
 
 from .base_db import BaseDB, SQLTask
+
+CharType = Literal["lore", "norm"]
 
 
 class DbCharDB(BaseDB):
@@ -36,7 +38,7 @@ class DbCharDB(BaseDB):
         cls,
         id: int,
         name: str,
-        char_type: str,
+        char_type: CharType,
         content_ids: list[str],
         discord_url: str | None = None,
         game_db_id: int | None = None,
@@ -60,7 +62,7 @@ class DbCharDB(BaseDB):
         uid: int,
         name: str | None = None,
         discord_url: str | None = None,
-        char_type: str | None = None,
+        char_type: CharType | None = None,
         content_ids: list[str] | None = None,
         game_db_id: int | None = None,
     ) -> None:
