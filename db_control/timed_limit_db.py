@@ -1,4 +1,5 @@
 import time
+from queue import Queue
 from typing import Any, Literal
 
 from .base_db import BaseDB, SQLTask
@@ -12,6 +13,9 @@ TimedLimitStatus = Literal[
 
 class TimedLimitDB(BaseDB):
     _db_name = "timed_limit"
+
+    _worker_started: bool = False
+    _queue = Queue()
 
     @classmethod
     def set_up(cls) -> None:

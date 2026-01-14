@@ -3,6 +3,7 @@ import contextlib
 from fastapi import FastAPI
 
 from db_control import AccessDB, CredentialsDB, DbCharDB, PermaLimitDB, TimedLimitDB
+from router.access_api import router as access_api_router
 from router.overlord_api import router as overlord_api_router
 
 
@@ -28,4 +29,5 @@ app = FastAPI(
     openapi_url=None,
 )
 
+app.include_router(access_api_router)
 app.include_router(overlord_api_router)

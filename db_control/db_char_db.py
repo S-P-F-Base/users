@@ -1,4 +1,5 @@
 import json
+from queue import Queue
 from typing import Any
 
 from .base_db import BaseDB, SQLTask
@@ -6,6 +7,9 @@ from .base_db import BaseDB, SQLTask
 
 class DbCharDB(BaseDB):
     _db_name = "db_char"
+
+    _worker_started: bool = False
+    _queue = Queue()
 
     @classmethod
     def set_up(cls) -> None:

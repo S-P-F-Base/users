@@ -1,3 +1,4 @@
+from queue import Queue
 from typing import Any
 
 from .base_db import BaseDB, SQLTask
@@ -5,6 +6,9 @@ from .base_db import BaseDB, SQLTask
 
 class PermaLimitDB(BaseDB):
     _db_name = "perma_limit"
+
+    _worker_started: bool = False
+    _queue = Queue()
 
     @classmethod
     def set_up(cls) -> None:

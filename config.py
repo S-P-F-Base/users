@@ -1,4 +1,5 @@
 import logging
+from enum import Enum
 from pathlib import Path
 
 import httpx
@@ -42,10 +43,59 @@ class Constants:
 
         except Exception as exc:
             log.exception(
-                "Unexpected error while fetching %s: %s", "http://overlord/config", exc
+                "Unexpected error while fetching %s: %s",
+                "http://overlord/config",
+                exc,
             )
             cls._data = {}
 
     @classmethod
     def get_all_const(cls) -> dict[str, str]:
         return cls._data
+
+
+class AccessKeys(Enum):
+    """
+    Енум с базовыми правами и доступами
+    value[0] - ключ
+    value[1] - значение по умолчанию
+    """
+
+    ALL = "all_access", False
+    """Позволяет байпасать абсолютно все права"""
+
+    CREATE_USER = "create_user", False
+    """Позволяет создавать пользователя"""
+    UPDATE_USER = "update_user", False
+    """Позволяет обновлять пользователя"""
+    DELETE_USER = "delete_user", False
+    """Позволяет удалять пользователя"""
+
+    UPDATE_TIMED_LIMIT = "update_timed_limit", False
+    """Позволяет менять временный лимит"""
+    UPDATE_PERMA_LIMIT = "update_perma_limit", False
+    """Позволяет менять перманентный лимит"""
+
+    CREATE_DB_CHAR = "create_db_char", False
+    """Позволяет создавать персонажей игрока"""
+    UPDATE_DB_CHAR = "update_db_char", False
+    """Позволяет обновлять персонажей игрока"""
+    DELETE_DB_CHAR = "delete_db_char", False
+    """Позволяет удалять персонажей игрока"""
+
+    UPDATE_ACCESS = "update_access", False
+    """Позволяет менять доступ"""
+
+    UPDATE_NOTE = "update_note", False
+    """Позволяет апдейтить записи людей"""
+
+    UPDATE_BLACK_LIST = "update_black_list", False
+    """Позволяет обновлять чёрный список"""
+
+    @classmethod
+    def get_all_access_keys(cls) -> list[str]:
+        return [x.value[0] for x in list(cls)]
+
+    @classmethod
+    def get_base_access(cls) -> dict[str, bool]:
+        return {x.value[0]: x.value[1] for x in list(cls)}

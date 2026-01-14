@@ -1,3 +1,4 @@
+from queue import Queue
 from typing import Any
 
 from db_control.base_db import SQLTask
@@ -7,6 +8,9 @@ from .base_db import BaseDB
 
 class CredentialsDB(BaseDB):
     _db_name = "credentials"
+
+    _worker_started: bool = False
+    _queue = Queue()
 
     @classmethod
     def set_up(cls) -> None:

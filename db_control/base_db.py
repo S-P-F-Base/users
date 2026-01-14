@@ -19,17 +19,21 @@ class SQLTask:
 class BaseDB:
     _db_name: str = ""
 
-    __queue: Queue[SQLTask] = Queue()
-    __worker_started = False
+    @classmethod
+    def _get_queue(cls) -> Queue:
+        if cls._queue is None:
+            cls._queue = Queue()
+
+        return cls._queue
 
     @classmethod
-    def __db_path(cls) -> Path:
+    def _db_path(cls) -> Path:
         return _DB_DIR / f"{cls._db_name}.db"
 
     @classmethod
-    def __connect(cls) -> sqlite3.Connection:
+    def _connect(cls) -> sqlite3.Connection:
         conn = sqlite3.connect(
-            cls.__db_path(),
+            cls._db_path(),
             timeout=5.0,
             isolation_level=None,
             check_same_thread=False,
@@ -40,8 +44,8 @@ class BaseDB:
         return conn
 
     @classmethod
-    def __execute_write(cls, task: SQLTask):
-        conn = cls.__connect()
+    def _execute_write(cls, task: SQLTask):
+        conn = cls._connect()
         try:
             conn.execute("BEGIN;")
             conn.execute(task.sql, task.params or ())
@@ -55,42 +59,44 @@ class BaseDB:
             conn.close()
 
     @classmethod
-    def __start_worker(cls):
-        if cls.__worker_started:
+    def _start_worker(cls):
+        if cls._worker_started:
             return
 
-        cls.__worker_started = True
+        cls._worker_started = True
+        queue = cls._get_queue()
 
         def worker():
             while True:
-                task = cls.__queue.get()
+                task = queue.get()
                 try:
-                    cls.__execute_write(task)
+                    cls._execute_write(task)
 
                 except Exception:
-                    logging.exception(f"DB {cls._db_name} write failed: {str(task)}")
-                    pass
+                    logging.exception(f"DB {cls._db_name} write failed: {task}")
 
                 finally:
-                    cls.__queue.task_done()
+                    queue.task_done()
 
         Thread(target=worker, daemon=True).start()
 
     @classmethod
     def _init_db(cls, sql_t: list[SQLTask]) -> None:
         _DB_DIR.mkdir(parents=True, exist_ok=True)
-        cls.__start_worker()
+        cls._start_worker()
+
+        queue = cls._get_queue()
         for task in sql_t:
-            cls.__queue.put(task)
+            queue.put(task)
 
     @classmethod
     def submit_write(cls, sql_t: SQLTask):
-        cls.__queue.put(sql_t)
+        cls._get_queue().put(sql_t)
 
     @classmethod
     @contextmanager
     def read(cls):
-        conn = cls.__connect()
+        conn = cls._connect()
         try:
             yield conn
 
