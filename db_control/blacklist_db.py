@@ -1,6 +1,5 @@
 # TODO:
 
-# X:1
+# 1:1
 # credential.id
-# type
-# msg
+# blob json
